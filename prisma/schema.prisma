@@ -17,7 +17,7 @@ model Transaction {
   id            String                   @id @default(cuid())
   name          String
   type          TransactionType
-  amout         Decimal                  @db.Decimal(10, 2)
+  amount        Decimal                  @db.Decimal(10, 2)
   category      TransactionCategory
   paymentMethod TransactionPaymentMethod @map("payment_method")
   date          DateTime
