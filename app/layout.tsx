@@ -6,7 +6,7 @@ import { dark } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 
-const mulish = Mulish({ subsets: ["latin"] });
+const mulish = Mulish({ subsets: ["latin-ext"] });
 
 export const metadata: Metadata = {
   title: "finance.ai",
