@@ -1,5 +1,8 @@
 import "./globals.css";
 
+import { ptBR } from "@clerk/localizations";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Mulish } from "next/font/google";
 
@@ -17,7 +20,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${mulish.className} dark antialiased`}>{children}</body>
+      <body className={`${mulish.className} dark antialiased`}>
+        <ClerkProvider
+          localization={ptBR}
+          appearance={{
+            baseTheme: dark,
+          }}
+        >
+          {children}
+        </ClerkProvider>
+      </body>
     </html>
   );
 }
