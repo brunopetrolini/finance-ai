@@ -7,6 +7,9 @@ import {
   TransactionType,
 } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import { PencilIcon, Trash2Icon } from "lucide-react";
+
+import { Button } from "@/app/_components/ui/button";
 
 import { TransactionTypeBadge } from "../_components/type-badge";
 
@@ -67,7 +70,9 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     cell: (row) => {
       const date = row.getValue<Date>();
       return new Date(date).toLocaleDateString("pt-BR", {
-        dateStyle: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
       });
     },
   },
@@ -75,14 +80,25 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     accessorKey: "amount",
     header: "Valor",
     cell: (row) => {
-      return Number(row.getValue()).toLocaleString("pt-BR", {
+      const amount = row.getValue<number>();
+      return Intl.NumberFormat("pt-BR", {
         currency: "BRL",
         style: "currency",
-      });
+      }).format(amount);
     },
   },
   {
     accessorKey: "actions",
     header: "",
+    cell: () => (
+      <div className="space-x-1">
+        <Button variant="ghost" size="icon" className="text-muted-foreground">
+          <PencilIcon />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-muted-foreground">
+          <Trash2Icon />
+        </Button>
+      </div>
+    ),
   },
 ];
