@@ -10,6 +10,7 @@ import { ArrowDownUpIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { addTransaction } from "../_actions/add-transaction";
 import {
   TRANSACTION_CATEGORY_OPTIONS,
   TRANSACTION_PAYMENT_OPTIONS,
@@ -55,7 +56,7 @@ const formSchema = z.object({
     .max(100, {
       message: "Deve conter entre 3 e 100 caracteres.",
     }),
-  amount: z.string({ required_error: "O valor da transação é obrigatório." }),
+  amount: z.number({ required_error: "O valor da transação é obrigatório." }),
   type: z.nativeEnum(TransactionType, {
     required_error: "O tipo da transação é obrigatório.",
   }),
@@ -77,8 +78,12 @@ export function AddTransactionButton() {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const onSubmit = async (data: FormData) => {
+    try {
+      await addTransaction(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -125,7 +130,15 @@ export function AddTransactionButton() {
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <MoneyInput placeholder="R$ 100,00" {...field} />
+                    <MoneyInput
+                      placeholder="R$ 100,00"
+                      value={field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
