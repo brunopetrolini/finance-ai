@@ -7,6 +7,7 @@ import {
   TransactionType,
 } from "@prisma/client";
 import { ArrowDownUpIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -56,7 +57,11 @@ const formSchema = z.object({
     .max(100, {
       message: "Deve conter entre 3 e 100 caracteres.",
     }),
-  amount: z.number({ required_error: "O valor da transação é obrigatório." }),
+  amount: z
+    .number({ required_error: "O valor da transação é obrigatório." })
+    .positive({
+      message: "O valor da transação deve ser maior que zero.",
+    }),
   type: z.nativeEnum(TransactionType, {
     required_error: "O tipo da transação é obrigatório.",
   }),
@@ -74,6 +79,8 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export function AddTransactionButton() {
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
@@ -81,6 +88,8 @@ export function AddTransactionButton() {
   const onSubmit = async (data: FormData) => {
     try {
       await addTransaction(data);
+      setDialogIsOpen(false);
+      form.reset();
     } catch (error) {
       console.error(error);
     }
@@ -88,7 +97,9 @@ export function AddTransactionButton() {
 
   return (
     <Dialog
+      open={dialogIsOpen}
       onOpenChange={(open) => {
+        setDialogIsOpen(open);
         if (!open) {
           form.reset();
         }
@@ -246,7 +257,14 @@ export function AddTransactionButton() {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="outline">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setDialogIsOpen(false);
+                    form.reset();
+                  }}
+                >
                   Cancelar
                 </Button>
               </DialogClose>

@@ -6,6 +6,7 @@ import {
   TransactionPaymentMethod,
   TransactionType,
 } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 import { db } from "@/app/_lib/prisma";
 
@@ -35,4 +36,6 @@ export async function addTransaction(data: TransactionData) {
       userId,
     },
   });
+
+  revalidatePath("/transactions");
 }
