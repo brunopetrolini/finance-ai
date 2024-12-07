@@ -4,7 +4,11 @@ import { db } from "../_lib/prisma";
 import { transactionColumns } from "./_columns";
 
 export default async function Transactions() {
-  const transactions = await db.transaction.findMany();
+  const transactions = await db.transaction.findMany({
+    orderBy: {
+      date: "desc",
+    },
+  });
 
   return (
     <div className="space-y-6 p-6">

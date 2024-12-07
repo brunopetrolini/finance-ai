@@ -10,9 +10,10 @@ import { revalidatePath } from "next/cache";
 
 import { db } from "@/app/_lib/prisma";
 
-import { addTransactionSchema } from "./schema";
+import { upsertTransactionSchema } from "./schema";
 
 interface TransactionData {
+  id?: string;
   name: string;
   type: TransactionType;
   amount: number;
@@ -21,8 +22,8 @@ interface TransactionData {
   date: Date;
 }
 
-export async function addTransaction(data: TransactionData) {
-  addTransactionSchema.parse(data);
+export async function upsertTransaction(data: TransactionData) {
+  upsertTransactionSchema.parse(data);
 
   const { userId } = await auth();
 
@@ -30,11 +31,10 @@ export async function addTransaction(data: TransactionData) {
     throw new Error("User is not authenticated");
   }
 
-  await db.transaction.create({
-    data: {
-      ...data,
-      userId,
-    },
+  await db.transaction.upsert({
+    where: { id: data.id ?? "" },
+    update: data,
+    create: { ...data, userId },
   });
 
   revalidatePath("/transactions");
