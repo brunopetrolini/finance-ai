@@ -10,6 +10,8 @@ export default async function Transactions() {
     },
   });
 
+  const stringifiedTransactions = JSON.stringify(transactions, null, 2);
+
   return (
     <div className="space-y-6 p-6">
       <div className="flex w-full items-center justify-between">
@@ -18,7 +20,10 @@ export default async function Transactions() {
         <AddTransactionButton />
       </div>
 
-      <DataTable columns={transactionColumns} data={transactions} />
+      <DataTable
+        columns={transactionColumns}
+        data={JSON.parse(stringifiedTransactions)}
+      />
     </div>
   );
 }
