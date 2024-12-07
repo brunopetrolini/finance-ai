@@ -28,7 +28,11 @@ export async function upsertTransaction(data: TransactionData) {
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("User is not authenticated");
+    throw new Error("Unauthorized");
+  }
+
+  if (userId && userId !== data.id) {
+    throw new Error("Forbidden");
   }
 
   await db.transaction.upsert({
