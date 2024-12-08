@@ -31,10 +31,6 @@ export async function upsertTransaction(data: TransactionData) {
     throw new Error("Unauthorized");
   }
 
-  if (userId && userId !== data.id) {
-    throw new Error("Forbidden");
-  }
-
   await db.transaction.upsert({
     where: { id: data.id ?? "" },
     update: data,
